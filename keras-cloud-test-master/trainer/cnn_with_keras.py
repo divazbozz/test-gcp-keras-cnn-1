@@ -55,13 +55,20 @@ def main(job_dir, **args):
     # Setting up the path for saving logs
     logs_path = job_dir + 'logs/tensorboard'
 
+    num_classes = 10
     (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data(
         path="mnist.npz")
-    X_train = np.expand_dims(X_train, axis=3)
-    X_test = np.expand_dims(X_test, axis=3)
+    X_train = X_train.astype("float32") / 255
+    X_test = X_test.astype("float32") / 255
+    X_train = np.expand_dims(X_train, -1)
+    X_test = np.expand_dims(X_test, -1)
+    y_train = keras.utils.to_categorical(y_train, num_classes)
+    y_test = keras.utils.to_categorical(y_test, num_classes)
     # Initializing the model
-    print('X_train dimension')
-    print(X_train.shape[1:])
+    print('X_train/_test dimension')
+    print(X_train.shape, X_test.shape)
+    print('y_train dimension')
+    print(y_train.shape)
     model = build_model(X_train.shape[1:])
 
     # Compling the model
